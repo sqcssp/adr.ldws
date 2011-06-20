@@ -1,0 +1,26 @@
+int get_event_msg(void)
+	get event
+	
+	return 
+		none zero for somthing error
+	
+void *set_car_parameter(struct parm_car_setting *set)
+	setup car data
+	
+	input set
+		input car parameter
+		
+		set.pIn_addr			input image address
+		set.pOut_addr			output image address
+		set.init_flag			first setup
+		set.carbody_width		width of carbody
+		set.camera_high_degree	setup camera high degree	
+		set.gps_speed			setup car driving speed
+		set.light_signal		light signal direction
+		set.image_width	        width of image 
+		set.image_height		height of image
+		set.car_event			the message of driving event
+		
+	return 
+		image buffer address
+		
