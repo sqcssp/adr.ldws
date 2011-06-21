@@ -122,8 +122,8 @@ void *thread_audio(void *nothing)
 {
 	while(!ready_for_ending) {
 		pthread_mutex_lock(&remainMutex);
-		printf("Receiving Audio....\n");
-		usleep(10000);
+//		printf("Receiving Audio....\n");
+//		usleep(10000);
 		pthread_cond_signal(&noBuffer);
 		pthread_mutex_unlock(&remainMutex);
 		sleep(rand()%3);
@@ -158,7 +158,7 @@ void *thread_ldws(void *nothing)
 		paddr_tmp_b = paddr_tmp_c;
 		paddr_tmp_a = paddr_tmp_b;
 
-		pthread_mutex_lock(&remainMutex);
+//		pthread_mutex_lock(&remainMutex);
 
 		car_set.pIn_addr = paddr_camera;
 		car_set.gps_speed = 70;
@@ -180,7 +180,7 @@ void *thread_ldws(void *nothing)
 
 		camera_get_one_frame_complete(&camera);
 
-		pthread_mutex_unlock(&remainMutex);
+//		pthread_mutex_unlock(&remainMutex);
 
 		i++;
 //		usleep(10000);
@@ -195,8 +195,8 @@ void *thread_record(void *nothing)
 	while(!ready_for_ending) {
 		pthread_mutex_lock(&remainMutex);
 		pthread_cond_wait(&noBuffer, &remainMutex);
-		printf("Recording SD Card....\n");
-		usleep(50000);
+//		printf("Recording SD Card....\n");
+//		usleep(50000);
 		pthread_cond_signal(&noBuffer);
 		pthread_mutex_unlock(&remainMutex);
 		sleep(rand()%5);
@@ -208,8 +208,8 @@ void *thread_video(void *nothing)
 {
 	while(!ready_for_ending) {
 		pthread_mutex_lock(&remainMutex);
-		printf("Receiving Video....\n");
-		usleep(20000);
+//		printf("Receiving Video....\n");
+//		usleep(20000);
 		pthread_cond_signal(&noBuffer);
 		pthread_mutex_unlock(&remainMutex);
 		sleep(rand()%4);
