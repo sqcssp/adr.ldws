@@ -24,7 +24,7 @@ void *set_car_parm(struct car_parm_setting *pParm)
 		pParm->camera_high_degree = pParm->camera_high_degree;
 	}
 
-	usleep(200000);
+//	usleep(200000);
 
 	pParm->car_event = rand()%3;
 

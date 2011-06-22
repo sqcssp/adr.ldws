@@ -183,8 +183,6 @@ void *thread_ldws(void *nothing)
 //		pthread_mutex_unlock(&remainMutex);
 
 		i++;
-//		usleep(10000);
-
 	}
 
 	return 0;
