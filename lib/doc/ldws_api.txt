@@ -23,4 +23,3 @@ void *set_car_parameter(struct parm_car_setting *set)
 		
 	return 
 		image buffer address
-		

@@ -15,8 +15,10 @@ struct config_camera {
 
 //int camera_get_one_frame(unsigned char *ppFrameAddr, long *FrameSize);
 void * camera_get_one_frame(struct config_camera *camera, long *FrameSize);
+void * camera_get_one_frame_noneblock(struct config_camera *camera, long *FrameSize);
 void *camera_get_one_frame_phy_address(struct config_camera *camera);
 int camera_get_one_frame_complete(struct config_camera *camera);
+int camera_get_one_frame_complete_noneblock(struct config_camera *camera);
 int camera_exit(struct config_camera *camera);
 int camera_init(struct config_camera *camera);
 

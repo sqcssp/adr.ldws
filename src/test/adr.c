@@ -126,7 +126,7 @@ void *thread_audio(void *nothing)
 //		usleep(10000);
 		pthread_cond_signal(&noBuffer);
 		pthread_mutex_unlock(&remainMutex);
-		sleep(rand()%3);
+		sleep(rand()%3+1);
 	}
 	return 0;
 }
@@ -152,19 +152,19 @@ void *thread_ldws(void *nothing)
 	while(!ready_for_ending) {
 
 		paddr_camera = camera_get_one_frame(&camera, &size_camera);
-
+/*
 		paddr_tmp_c = paddr_camera;
 		paddr_camera = paddr_tmp_a;
 		paddr_tmp_b = paddr_tmp_c;
 		paddr_tmp_a = paddr_tmp_b;
-
+*/
 //		pthread_mutex_lock(&remainMutex);
 
 		car_set.pIn_addr = paddr_camera;
 		car_set.gps_speed = 70;
 		car_set.light_signal = LIGHT_SIGNAL_OFF;
 
-		if ((i > 4) && (i & 1)) {
+//		if ((i > 4) && (i & 1)) {
 
 			paddr_camera = set_car_parm(&car_set);
 			car_event = car_set.car_event;
@@ -173,7 +173,7 @@ void *thread_ldws(void *nothing)
 			/* copy Y-field of video */
 			/* chang paddr_camera from your Y-field graphic */
 			memcpy(paddr_mem_tv, paddr_camera, width*height);
-		}
+//		}
 
 		config.addr_phy = addr_phy_tv;
 		tvout_exe(&config);
@@ -197,7 +197,7 @@ void *thread_record(void *nothing)
 //		usleep(50000);
 		pthread_cond_signal(&noBuffer);
 		pthread_mutex_unlock(&remainMutex);
-		sleep(rand()%5);
+		sleep(rand()%5+1);
 	}
 	return 0;
 }
@@ -210,7 +210,7 @@ void *thread_video(void *nothing)
 //		usleep(20000);
 		pthread_cond_signal(&noBuffer);
 		pthread_mutex_unlock(&remainMutex);
-		sleep(rand()%4);
+		sleep(rand()%4+1);
 	}
 	return 0;
 }
