@@ -1,14 +1,13 @@
 include Makefile.mk
 
-OBJECTS=./src/ldws/ldws.o 	\
-	./src/ldws/libldws.a
+OBJECTS=
 
 
 
 
 SRCS = $(OBJECTS:.o=.c)
 
-DEPENDENCY =./src/ldws/ldws.c
+DEPENDENCY =
 
 CC = $(CROSS)gcc
 AR = $(CROSS)ar
@@ -18,7 +17,7 @@ INC = -I./include
 
 TARGET = libsq8612.a
 
-all : camera tvout ldws $(TARGET)
+all : ldws $(TARGET)
 
 ldws :
 	cd ./src/ldws; $(MAKE)
@@ -32,4 +31,5 @@ $(TARGET) : $(OBJECTS)
 
 clean :
 	rm -rf $(OBJECTS) core
+	rm -rf ./src/ldws/ldws.o ./src/ldws/libldws.a
 

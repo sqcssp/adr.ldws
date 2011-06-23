@@ -51,4 +51,4 @@ test :
 
 clean :
 	rm -rf $(DEPEND_FILES) $(PROG) core
-
+	rm -rf ./test/adr.o ./test/adr.ldws
