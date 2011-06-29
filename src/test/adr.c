@@ -101,16 +101,16 @@ void *thread_event(void *nothing)
 	while(!ready_for_ending) {
 		switch(car_event) {
 			case WARNING_DRIVING_SAFE:
-				printf("Driving safe!\n");
+				printf("=\n");
 				break;
 			case WARNING_DRIVING_LEFT:
-				printf("Driving too left!\n");
+				printf("<\n");
 				break;
 			case WARNING_DRIVING_RIGHT:
-				printf("Driving too right!\n");
+				printf(">\n");
 				break;
 			case -1:
-				printf("Processing....\n");
+				printf("P\n");
 				break;
 		}
 		sleep(2);
@@ -135,7 +135,7 @@ void *thread_ldws(void *nothing)
 {
 	int width = 320;
 	int height = 240;
-	unsigned char *paddr_camera, *paddr_tmp_a, *paddr_tmp_b, *paddr_tmp_c;
+	unsigned char *paddr_camera;
 	long	size_camera;
 	unsigned int i=0;
 
@@ -152,12 +152,7 @@ void *thread_ldws(void *nothing)
 	while(!ready_for_ending) {
 
 		paddr_camera = camera_get_one_frame(&camera, &size_camera);
-/*
-		paddr_tmp_c = paddr_camera;
-		paddr_camera = paddr_tmp_a;
-		paddr_tmp_b = paddr_tmp_c;
-		paddr_tmp_a = paddr_tmp_b;
-*/
+
 //		pthread_mutex_lock(&remainMutex);
 
 		car_set.pIn_addr = paddr_camera;
@@ -167,7 +162,19 @@ void *thread_ldws(void *nothing)
 //		if ((i > 4) && (i & 1)) {
 
 			paddr_camera = set_car_parm(&car_set);
-			car_event = car_set.car_event;
+			switch(car_set.car_event) {
+				case WARNING_DRIVING_SAFE:
+					printf("=\n");
+					break;
+				case WARNING_DRIVING_LEFT:
+					printf("<\n");
+					break;
+				case WARNING_DRIVING_RIGHT:
+					printf(">\n");
+					break;
+			}
+
+			//car_event = car_set.car_event;
 			paddr_camera = car_set.pOut_addr;
 
 			/* copy Y-field of video */
@@ -219,7 +226,7 @@ int IOrun()
 {
 	pthread_t _thread_event;
 
-	pthread_create(&_thread_event, NULL, (void *)thread_event, (void *)0);
+//	pthread_create(&_thread_event, NULL, (void *)thread_event, (void *)0);
 	usleep(1);
 
 	return 0;
