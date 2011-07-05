@@ -52,4 +52,4 @@ test :
 clean :
 	rm -rf $(DEPEND_FILES) $(PROG) core
 	rm -rf ./test/adr.o ./test/adr.ldws
-	rm -rf ./test/test_tvout_camera.o
+	rm -rf ./test/test_tvout_camera.o ./test/config.o

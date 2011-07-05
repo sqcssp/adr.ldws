@@ -22,6 +22,7 @@
 #include "camera.h"
 #include "tvout.h"
 #include "ldws.h"
+#include "config.c"
 
 #define	WIDTH_VGA			640
 #define	HEIGHT_VGA			320
@@ -238,6 +239,7 @@ signal_init_handler(int signo)
 int main(int argc, char* argv[])
 {
 	int ret;
+	char fn[32] = "/sdcard/car.config";
 
 	if(atexit(exit_handler) != 0) {
 		exit(EXIT_FAILURE);
@@ -291,11 +293,30 @@ int main(int argc, char* argv[])
 	int i = 0;
 
 	static struct car_parm_setting car_set;
-	car_set.carbody_width = 150;
-	car_set.camera_high_degree = 50;
+
+	if(initlib(fn) >= 0) {
+		if (isname("PARAM","carbody_width"))
+			car_set.carbody_width = atoi(getvalue("carbody_width"));
+		if (isname("PARAM","camera_high_degree"))
+			car_set.camera_high_degree = atoi(getvalue("camera_high_degree"));
+		tidyup();
+	}
+	else {
+		car_set.carbody_width = 150;
+		car_set.camera_high_degree = 50;
+	}
+
 	car_set.init_flag = 1;
 	car_set.img_width = width;
 	car_set.img_height = height;
+
+	printf("/*......Car Setting......*/\n");
+	printf("  carbody width = %d cm \n", car_set.carbody_width);
+	printf("  camera high degree = %d cm \n", car_set.camera_high_degree);
+	printf("  image width = %d pixel \n", car_set.img_width);
+	printf("  image height = %d pixel \n", car_set.img_height);
+	printf("/*.......................*/\n");
+
 
 	while (1) {
 

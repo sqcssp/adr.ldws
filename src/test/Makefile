@@ -1,10 +1,10 @@
 include ../Makefile.mk
 
-OBJECTS= adr.o test_tvout_camera.o \
+OBJECTS= adr.o config.o test_tvout_camera.o \
 
 SRCS = $(OBJECTS:.o=.c)
 
-DEPENDENCY= adr.c test_tvout_camera.c \
+DEPENDENCY= adr.c config.c test_tvout_camera.c \
 
 
 CC = $(CROSS)gcc
@@ -19,10 +19,10 @@ PROG = adr.ldws
 
 all: $(PROG)
 	
-#adr.ldws: adr.o
+#adr.ldws: adr.o config.o
 #	$(CC) -o $@ $< $(LDFLAGS)
 
-adr.ldws: test_tvout_camera.o
+adr.ldws: test_tvout_camera.o config.o
 	$(CC) -o $@ $< $(LDFLAGS)
 
 test_tvout_camera.o: test_tvout_camera.c
@@ -31,6 +31,8 @@ test_tvout_camera.o: test_tvout_camera.c
 adr.o: adr.c
 	$(CC) $(INC) $(CFLAGS) -c $<
 	
+config.o: config.c
+	$(CC) $(INC) $(CFLAGS) -c $<
 
 clean:
 	rm -f $(OBJECTS) $(PROG)

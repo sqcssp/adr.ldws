@@ -17,7 +17,10 @@
 
 #include "camera.h"
 #include "tvout.h"
+#include "buttons.h"
 #include "ldws.h"
+#include "config.c"
+
 
 #define	WIDTH_VGA			640
 #define	HEIGHT_VGA			320
@@ -51,8 +54,10 @@ static int ready_for_ending;
 static int fd_mem;
 unsigned char *paddr_mem_tv;
 long	size_mem;
+static int press_key = -1;
 
 
+static struct buttons_config buttons;
 static struct config_camera camera;
 static struct config_tvout config;
 static struct car_parm_setting car_set;
@@ -86,6 +91,7 @@ exit_handler(void)
 
 	tvout_close(&config);
 	camera_exit(&camera);
+	buttons_close(&buttons);
 
 }
 
@@ -118,6 +124,43 @@ void *thread_event(void *nothing)
 	return 0;
 }
 
+void *thread_buttons(void *nothing)
+{
+	int num, i;
+
+	printf("Detecting Buttons....\n");
+
+	memset(&buttons, 0, sizeof(buttons));
+	buttons_open(&buttons);
+
+	while(!ready_for_ending) {
+
+		num = buttons_get(&buttons);
+		if (num < 0) {
+			//printf("no buttons press\n");
+			//sleep(1);
+		} else {
+			for (i = 0; i < buttons.num_get_buttons; ++i) {
+//				printf("key %d is %s\n", buttons.pbuttons_event[i].key, buttons.pbuttons_event[i].push == '0' ? "up" : "down");
+				press_key = buttons.pbuttons_event[i].key;
+				if(buttons.pbuttons_event[i].push == '0')
+					press_key = -1;
+			}
+			switch(press_key) {
+				case LIGHT_SIGNAL_LEFT:
+					printf("L\n");
+					break;
+				case LIGHT_SIGNAL_RIGHT:
+					printf("R\n");
+					break;
+				default:
+					break;
+			}
+		}
+	}
+	return 0;
+}
+
 void *thread_audio(void *nothing)
 {
 	while(!ready_for_ending) {
@@ -138,16 +181,36 @@ void *thread_ldws(void *nothing)
 	unsigned char *paddr_camera;
 	long	size_camera;
 	unsigned int i=0;
+	char fn[32] = "/sdcard/car.config";
+
 
 	printf("Starting LDWS....\n");
 
-	tvout_open(&config);
+	if(initlib(fn) >= 0) {
+		if (isname("PARAM","carbody_width"))
+			car_set.carbody_width = atoi(getvalue("carbody_width"));
+		if (isname("PARAM","camera_high_degree"))
+			car_set.camera_high_degree = atoi(getvalue("camera_high_degree"));
+		tidyup();
+	}
+	else {
+		car_set.carbody_width = 150;
+		car_set.camera_high_degree = 50;
+	}
 
 	car_set.init_flag = 1;
-	car_set.carbody_width = 150;
-	car_set.camera_high_degree = 50;
 	car_set.img_width = width;
 	car_set.img_height = height;
+
+	printf("/*......Car Setting......*/\n");
+	printf("  carbody width = %d cm \n", car_set.carbody_width);
+	printf("  camera high degree = %d cm \n", car_set.camera_high_degree);
+	printf("  image width = %d pixel \n", car_set.img_width);
+	printf("  image height = %d pixel \n", car_set.img_height);
+	printf("/*.......................*/\n");
+
+
+	tvout_open(&config);
 
 	while(!ready_for_ending) {
 
@@ -157,7 +220,7 @@ void *thread_ldws(void *nothing)
 
 		car_set.pIn_addr = paddr_camera;
 		car_set.gps_speed = 70;
-		car_set.light_signal = LIGHT_SIGNAL_OFF;
+		car_set.light_signal = press_key;//LIGHT_SIGNAL_OFF;
 
 //		if ((i > 4) && (i & 1)) {
 
@@ -224,9 +287,10 @@ void *thread_video(void *nothing)
 
 int IOrun()
 {
-	pthread_t _thread_event;
+	pthread_t _thread_event, _thread_buttons;
 
 //	pthread_create(&_thread_event, NULL, (void *)thread_event, (void *)0);
+	pthread_create(&_thread_buttons, NULL, (void *)thread_buttons, (void *)0);
 	usleep(1);
 
 	return 0;
