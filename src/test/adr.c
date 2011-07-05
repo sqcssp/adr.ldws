@@ -366,7 +366,7 @@ int main(int argc, char* argv[])
 
 	camera.format.width = width;                            /* set output frame width */
 	camera.format.height = height;                          /* set output frame height */
-	camera.format.pixelformat = V4L2_PIX_FMT_YUV422P;
+	camera.format.pixelformat = V4L2_PIX_FMT_YUV420;
 	//camera.format.pixelformat = V4L2_PIX_FMT_YUYV;
 
 	ret = camera_init(&camera);
